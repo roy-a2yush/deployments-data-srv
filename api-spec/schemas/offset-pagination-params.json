@@ -1,0 +1,32 @@
+{
+  "title": "OffsetPaginationParams",
+  "type": "object",
+  "required": [
+    "totalElements",
+    "totalPages",
+    "size",
+    "number"
+  ],
+  "properties": {
+    "totalElements": {
+      "type": "integer",
+      "description": "Total number of elements across all pages",
+      "example": 204
+    },
+    "totalPages": {
+      "type": "integer",
+      "description": "Total number of pages",
+      "example": 21
+    },
+    "size": {
+      "type": "integer",
+      "description": "Number of elements per page",
+      "example": 10
+    },
+    "number": {
+      "type": "integer",
+      "description": "Current page number (0-indexed)",
+      "example": 0
+    }
+  }
+}

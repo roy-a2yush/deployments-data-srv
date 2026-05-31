@@ -1,0 +1,7 @@
+{
+  "type": "https://api.deployments.com/errors/not-found",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "Deployment event with ID 'deploy_999' could not be found.",
+  "instance": "/deployments/deploy_999"
+}

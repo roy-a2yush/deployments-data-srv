@@ -1,0 +1,80 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: zephyr
+      changes:
+        - createTable:
+            tableName: deployments
+            columns:
+              - column:
+                  name: id
+                  type: VARCHAR(50)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: service
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: environment
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: duration
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: timestamp
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: commit_sha
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: previous_commit_sha
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: deployed_by
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: failure_reason
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rollback_of
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+        - createIndex:
+            indexName: idx_service_env_status
+            tableName: deployments
+            columns:
+              - column:
+                  name: service
+              - column:
+                  name: environment
+              - column:
+                  name: status
+        - createIndex:
+            indexName: idx_timestamp
+            tableName: deployments
+            columns:
+              - column:
+                  name: timestamp

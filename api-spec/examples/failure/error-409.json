@@ -1,0 +1,7 @@
+{
+  "type": "https://api.deployments.com/errors/conflict",
+  "title": "Conflict",
+  "status": 409,
+  "detail": "A deployment with ID 'deploy_123' already exists in the system. Unique constraints violated.",
+  "instance": "/deployments/deploy_123"
+}

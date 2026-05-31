@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "required": [
+    "type",
+    "title",
+    "status",
+    "detail"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "format": "uri",
+      "description": "A URI reference that identifies the problem type.",
+      "example": "https://api.deployments.com/errors/bad-request"
+    },
+    "title": {
+      "type": "string",
+      "description": "A short, human-readable summary of the problem type.",
+      "example": "Bad Request"
+    },
+    "status": {
+      "type": "integer",
+      "description": "The HTTP status code.",
+      "example": 400
+    },
+    "detail": {
+      "type": "string",
+      "description": "A human-readable explanation specific to this occurrence of the problem.",
+      "example": "Required query parameter 'environment' is invalid. Allowed values: [production, staging, canary]"
+    },
+    "instance": {
+      "type": "string",
+      "format": "uri",
+      "description": "A URI reference that identifies the specific occurrence of the problem.",
+      "example": "/deployments?environment=invalid_env"
+    }
+  }
+}

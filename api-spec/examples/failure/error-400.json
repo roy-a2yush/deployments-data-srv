@@ -1,0 +1,7 @@
+{
+  "type": "https://api.deployments.com/errors/bad-request",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "Failed to convert value of type 'java.lang.String' to required type 'DeploymentEnvironment' for parameter 'environment'; Failed to parse environment value 'invalid_env'. Allowed values: [production, staging, canary]",
+  "instance": "/deployments?environment=invalid_env"
+}

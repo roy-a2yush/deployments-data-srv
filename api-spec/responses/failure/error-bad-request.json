@@ -1,0 +1,13 @@
+{
+  "description": "Invalid input parameters or validation constraints violated",
+  "content": {
+    "application/json": {
+      "schema": {
+        "$ref": "../../schemas/error.json"
+      },
+      "example": {
+        "$ref": "../../examples/failure/error-400.json"
+      }
+    }
+  }
+}

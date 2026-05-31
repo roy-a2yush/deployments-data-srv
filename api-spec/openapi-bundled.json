@@ -1,0 +1,458 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Deployments Data Service API",
+    "version": "0.0.1-SNAPSHOT",
+    "description": "API for deployments data service"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check endpoint",
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "UP"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deployments": {
+      "get": {
+        "summary": "List deployments with pagination and filtering",
+        "operationId": "listDeployments",
+        "parameters": [
+          {
+            "name": "service",
+            "in": "query",
+            "required": false,
+            "description": "Filter by microservice name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Filter by deployment status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "success",
+                "failed",
+                "rolled_back",
+                "in_progress",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "environment",
+            "in": "query",
+            "required": false,
+            "description": "Filter by environment",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "production",
+                "staging",
+                "canary"
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/sizeParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved paginated list of deployments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "title": "OffsetPaginationParams",
+                      "type": "object",
+                      "required": [
+                        "totalElements",
+                        "totalPages",
+                        "size",
+                        "number"
+                      ],
+                      "properties": {
+                        "totalElements": {
+                          "type": "integer",
+                          "description": "Total number of elements across all pages",
+                          "example": 204
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "description": "Total number of pages",
+                          "example": 21
+                        },
+                        "size": {
+                          "type": "integer",
+                          "description": "Number of elements per page",
+                          "example": 10
+                        },
+                        "number": {
+                          "type": "integer",
+                          "description": "Current page number (0-indexed)",
+                          "example": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "content"
+                      ],
+                      "properties": {
+                        "content": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "service",
+                              "environment",
+                              "status",
+                              "duration",
+                              "timestamp",
+                              "commit_sha",
+                              "deployed_by"
+                            ],
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "deploy_123"
+                              },
+                              "service": {
+                                "type": "string",
+                                "example": "billing-api"
+                              },
+                              "environment": {
+                                "type": "string",
+                                "enum": [
+                                  "production",
+                                  "staging",
+                                  "canary"
+                                ],
+                                "example": "production"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "success",
+                                  "failed",
+                                  "rolled_back",
+                                  "in_progress",
+                                  "cancelled"
+                                ],
+                                "example": "success"
+                              },
+                              "duration": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 7200,
+                                "example": 320
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2026-05-30T14:32:00Z"
+                              },
+                              "commit_sha": {
+                                "type": "string",
+                                "example": "abc123"
+                              },
+                              "previous_commit_sha": {
+                                "type": "string",
+                                "example": "987def"
+                              },
+                              "deployed_by": {
+                                "type": "string",
+                                "example": "github-actions[bot]"
+                              },
+                              "failure_reason": {
+                                "type": "string",
+                                "example": "Health check failed"
+                              },
+                              "rollback_of": {
+                                "type": "string",
+                                "example": "deploy_122"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input parameters or validation constraints violated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "A URI reference that identifies the problem type.",
+                      "example": "https://api.deployments.com/errors/bad-request"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short, human-readable summary of the problem type.",
+                      "example": "Bad Request"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code.",
+                      "example": 400
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A human-readable explanation specific to this occurrence of the problem.",
+                      "example": "Required query parameter 'environment' is invalid. Allowed values: [production, staging, canary]"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "A URI reference that identifies the specific occurrence of the problem.",
+                      "example": "/deployments?environment=invalid_env"
+                    }
+                  }
+                },
+                "example": {
+                  "type": "https://api.deployments.com/errors/bad-request",
+                  "title": "Bad Request",
+                  "status": 400,
+                  "detail": "Failed to convert value of type 'java.lang.String' to required type 'DeploymentEnvironment' for parameter 'environment'; Failed to parse environment value 'invalid_env'. Allowed values: [production, staging, canary]",
+                  "instance": "/deployments?environment=invalid_env"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deployments/{id}": {
+      "get": {
+        "summary": "Get details of a single deployment event",
+        "operationId": "getDeployment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the deployment event",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved deployment details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "service",
+                    "environment",
+                    "status",
+                    "duration",
+                    "timestamp",
+                    "commit_sha",
+                    "deployed_by"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "deploy_123"
+                    },
+                    "service": {
+                      "type": "string",
+                      "example": "billing-api"
+                    },
+                    "environment": {
+                      "type": "string",
+                      "enum": [
+                        "production",
+                        "staging",
+                        "canary"
+                      ],
+                      "example": "production"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "success",
+                        "failed",
+                        "rolled_back",
+                        "in_progress",
+                        "cancelled"
+                      ],
+                      "example": "success"
+                    },
+                    "duration": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 7200,
+                      "example": 320
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-05-30T14:32:00Z"
+                    },
+                    "commit_sha": {
+                      "type": "string",
+                      "example": "abc123"
+                    },
+                    "previous_commit_sha": {
+                      "type": "string",
+                      "example": "987def"
+                    },
+                    "deployed_by": {
+                      "type": "string",
+                      "example": "github-actions[bot]"
+                    },
+                    "failure_reason": {
+                      "type": "string",
+                      "example": "Health check failed"
+                    },
+                    "rollback_of": {
+                      "type": "string",
+                      "example": "deploy_122"
+                    }
+                  }
+                },
+                "example": {
+                  "id": "deploy_123",
+                  "service": "billing-api",
+                  "environment": "production",
+                  "status": "success",
+                  "duration": 320,
+                  "timestamp": "2026-05-30T14:32:00Z",
+                  "commit_sha": "abc123",
+                  "previous_commit_sha": "987def",
+                  "deployed_by": "github-actions[bot]",
+                  "failure_reason": null,
+                  "rollback_of": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Requested deployment record could not be found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "A URI reference that identifies the problem type.",
+                      "example": "https://api.deployments.com/errors/bad-request"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short, human-readable summary of the problem type.",
+                      "example": "Bad Request"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code.",
+                      "example": 400
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A human-readable explanation specific to this occurrence of the problem.",
+                      "example": "Required query parameter 'environment' is invalid. Allowed values: [production, staging, canary]"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "A URI reference that identifies the specific occurrence of the problem.",
+                      "example": "/deployments?environment=invalid_env"
+                    }
+                  }
+                },
+                "example": {
+                  "type": "https://api.deployments.com/errors/not-found",
+                  "title": "Not Found",
+                  "status": 404,
+                  "detail": "Deployment event with ID 'deploy_999' could not be found.",
+                  "instance": "/deployments/deploy_999"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "pageParam": {
+        "name": "page",
+        "in": "query",
+        "required": false,
+        "description": "Page number (0-indexed)",
+        "schema": {
+          "type": "integer",
+          "default": 0
+        }
+      },
+      "sizeParam": {
+        "name": "size",
+        "in": "query",
+        "required": false,
+        "description": "Size of the page",
+        "schema": {
+          "type": "integer",
+          "default": 10
+        }
+      }
+    }
+  }
+}

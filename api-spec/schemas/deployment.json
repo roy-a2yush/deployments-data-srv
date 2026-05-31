@@ -1,0 +1,74 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "service",
+    "environment",
+    "status",
+    "duration",
+    "timestamp",
+    "commit_sha",
+    "deployed_by"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "example": "deploy_123"
+    },
+    "service": {
+      "type": "string",
+      "example": "billing-api"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "production",
+        "staging",
+        "canary"
+      ],
+      "example": "production"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failed",
+        "rolled_back",
+        "in_progress",
+        "cancelled"
+      ],
+      "example": "success"
+    },
+    "duration": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 7200,
+      "example": 320
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "example": "2026-05-30T14:32:00Z"
+    },
+    "commit_sha": {
+      "type": "string",
+      "example": "abc123"
+    },
+    "previous_commit_sha": {
+      "type": "string",
+      "example": "987def"
+    },
+    "deployed_by": {
+      "type": "string",
+      "example": "github-actions[bot]"
+    },
+    "failure_reason": {
+      "type": "string",
+      "example": "Health check failed"
+    },
+    "rollback_of": {
+      "type": "string",
+      "example": "deploy_122"
+    }
+  }
+}

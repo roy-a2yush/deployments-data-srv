@@ -1,0 +1,13 @@
+{
+  "id": "deploy_123",
+  "service": "billing-api",
+  "environment": "production",
+  "status": "success",
+  "duration": 320,
+  "timestamp": "2026-05-30T14:32:00Z",
+  "commit_sha": "abc123",
+  "previous_commit_sha": "987def",
+  "deployed_by": "github-actions[bot]",
+  "failure_reason": null,
+  "rollback_of": null
+}

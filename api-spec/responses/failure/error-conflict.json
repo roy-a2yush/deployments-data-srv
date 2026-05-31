@@ -1,0 +1,13 @@
+{
+  "description": "Unique key constraint or logical state conflict occurred",
+  "content": {
+    "application/json": {
+      "schema": {
+        "$ref": "../../schemas/error.json"
+      },
+      "example": {
+        "$ref": "../../examples/failure/error-409.json"
+      }
+    }
+  }
+}

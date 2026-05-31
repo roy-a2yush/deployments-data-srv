@@ -1,0 +1,13 @@
+{
+  "description": "Requested deployment record could not be found",
+  "content": {
+    "application/json": {
+      "schema": {
+        "$ref": "../../schemas/error.json"
+      },
+      "example": {
+        "$ref": "../../examples/failure/error-404.json"
+      }
+    }
+  }
+}

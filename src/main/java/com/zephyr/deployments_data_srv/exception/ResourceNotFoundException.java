@@ -1,0 +1,8 @@
+package com.zephyr.deployments_data_srv.exception;
+
+public class ResourceNotFoundException extends RuntimeException {
+    
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}
