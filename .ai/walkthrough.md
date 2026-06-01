@@ -61,3 +61,28 @@ All **9 test cases** inside the test suite compile and execute with a 100% succe
   * Assert paginated responses and JSON DTO layouts match the OpenAPI spec.
   * Assert `404 Not Found` maps perfectly on missing IDs.
   * Assert `400 Bad Request` maps validation failures to RFC 7807 error schema.
+
+---
+
+## Release Notes (v1.2.0) - Java 26 Upgrade & Test Isolation
+
+### 🚀 **New Features & Capabilities**
+* **Java 26 Target Support**: Fully migrated build targets and configurations to target the latest Java 26 SDK natively.
+* **Spring Security Removal**: Removed Spring Security from all endpoints to eliminate local redirections and authentication overhead.
+* **Premium Static Landing Page**: Created a premium glassmorphic dark-mode Welcome Page at `/` offering direct navigation to Swagger UI `/swagger-ui/index.html` and summarizing project capabilities.
+* **Standardized 404 Exception Mapping**: Enhanced `GlobalExceptionHandler` to explicitly trap `NoResourceFoundException` and output a clean RFC 7807 404 Page Not Found error instead of a 500 error.
+* **Offline Test Isolation**: Integrated an in-memory H2 database under the `test` profile and mocked `KafkaAdmin` to support 100% offline context testing without active MySQL, Kafka, or Redis connections.
+
+### **Verification & Test Execution Results**
+All **9 test cases** inside the test suite compile and execute with a 100% success rate under Java 26:
+```text
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  10.152 s
+```
+

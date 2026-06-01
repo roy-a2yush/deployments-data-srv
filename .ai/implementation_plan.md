@@ -170,3 +170,24 @@ Integration tests using MockMvc for HTTP endpoints, filters, enums, security, an
 - Test using curl:
   - Paginated list: `curl -u admin:adminpassword http://localhost:8080/deployments?page=0&size=10`
   - Filtered: `curl -u admin:adminpassword http://localhost:8080/deployments?status=failed&page=0&size=5`
+
+---
+
+## Upgrade & Isolation Implementation Plan (v1.2.0)
+
+### 1. Java 26 Migration
+* **Maven Target**: Update `<java.version>` properties to `26` in `pom.xml`.
+* **Multi-stage Docker Build**: Update `Dockerfile` to build inside `azul/zulu-openjdk:26` pulling pre-installed Maven, and execute inside an optimized `azul/zulu-openjdk:26-jre` container with a non-privileged `spring` user.
+
+### 2. Spring Security Removal
+* **Constraint**: Eliminate all local redirect and credentials layers to offer a zero-overhead local deployment test stack. Remove security packages from dependencies and references in controller/test classes.
+
+### 3. Test Isolation & Offline Compatibility
+* **Test Profile Properties**: Set up `src/test/resources/application.yml` targeting an in-memory MySQL-mode H2 database instance (`jdbc:h2:mem:deployments_db;DB_CLOSE_DELAY=-1;MODE=MySQL`).
+* **Kafka Broker Stubbing**: In `DeploymentsDataSrvApplicationTests.java`, mock `KafkaAdmin` with `@MockitoBean` to entirely isolate the context from active streaming infrastructure loops.
+
+### 4. Custom Welcome & Navigation Landing Page
+* **Path**: Establish `src/main/resources/static/index.html` as a premium dark-mode welcome page linking directly to the local Swagger UI.
+
+### 5. Proper 404 Route Mapping
+* **Handler**: Intercept Spring's `NoResourceFoundException` in `GlobalExceptionHandler` and map it into a standardized RFC 7807 problem details response (status 404) rather than a default 500 error.

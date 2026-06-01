@@ -5,7 +5,7 @@ An enterprise-grade, high-performance **Deployment Event Telemetry Data Service*
 ---
 
 ## 🛠 Tech Stack
-* **Framework**: Spring Boot 4.0.6 (Java 17)
+* **Framework**: Spring Boot 4.0.6 (Java 26)
 * **Build Tool**: Maven
 * **Database**: MySQL 8.0 (Schema provisioning and seeding managed by Liquibase SQL Migrations)
 * **Caching & Streaming**: Redis Cache + Apache Kafka (KRaft mode)
@@ -75,8 +75,10 @@ If you make changes to the source code and want to force a clean container rebui
 ```bash
 docker compose up --build
 ```
-* The Spring Boot microservice will be available at **`http://localhost:8080`**.
+* The Spring Boot microservice will be available at **`http://localhost:8080`** (serving a premium glassmorphic dark-mode Welcome Page with direct navigation links to Swagger UI).
 * Traces will automatically flow into Jaeger on **`http://localhost:16686`**.
+* Standardized 404 RFC 7807 errors are handled gracefully (e.g. accessing `/hello` or invalid routes returns a clean payload instead of a 500 error).
+* Spring Security has been completely removed to provide zero-overhead, seamless access to endpoints and the Swagger UI.
 
 ---
 
