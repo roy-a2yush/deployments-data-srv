@@ -36,6 +36,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    public ResponseEntity<ListDeployments400Response> handleNoResourceFound(org.springframework.web.servlet.resource.NoResourceFoundException ex, HttpServletRequest request) {
+        ListDeployments400Response error = new ListDeployments400Response();
+        error.setType(URI.create("https://api.deployments.com/errors/not-found"));
+        error.setTitle("Page Not Found");
+        error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.setDetail("The requested resource was not found: " + ex.getMessage());
+        error.setInstance(URI.create(request.getRequestURI()));
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ListDeployments400Response> handleGeneralError(Exception ex, HttpServletRequest request) {
         ListDeployments400Response error = new ListDeployments400Response();

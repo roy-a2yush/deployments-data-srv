@@ -4,7 +4,7 @@ import com.zephyr.deployments_data_srv.DeploymentsApi;
 import com.zephyr.deployments_data_srv.ListDeployments200Response;
 import com.zephyr.deployments_data_srv.ListDeployments200ResponseAllOfContentInner;
 import com.zephyr.deployments_data_srv.model.Deployment;
-import com.zephyr.deployments_data_srv.service.DeploymentService;
+import com.zephyr.deployments_data_srv.service.interfaces.DeploymentService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

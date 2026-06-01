@@ -1,11 +1,12 @@
-package com.zephyr.deployments_data_srv.service;
+package com.zephyr.deployments_data_srv.service.implementations;
 
 import com.zephyr.deployments_data_srv.exception.ResourceNotFoundException;
 import com.zephyr.deployments_data_srv.model.Deployment;
-import com.zephyr.deployments_data_srv.model.DeploymentEnvironment;
-import com.zephyr.deployments_data_srv.model.DeploymentStatus;
-import com.zephyr.deployments_data_srv.repository.DeploymentRepository;
-import com.zephyr.deployments_data_srv.repository.DeploymentSpecification;
+import com.zephyr.deployments_data_srv.model.enums.DeploymentEnvironment;
+import com.zephyr.deployments_data_srv.model.enums.DeploymentStatus;
+import com.zephyr.deployments_data_srv.repository.interfaces.DeploymentRepository;
+import com.zephyr.deployments_data_srv.repository.implementations.DeploymentSpecification;
+import com.zephyr.deployments_data_srv.service.interfaces.DeploymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

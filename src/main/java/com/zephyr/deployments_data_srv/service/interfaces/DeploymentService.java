@@ -1,4 +1,4 @@
-package com.zephyr.deployments_data_srv.service;
+package com.zephyr.deployments_data_srv.service.interfaces;
 
 import com.zephyr.deployments_data_srv.model.Deployment;
 import org.springframework.data.domain.Page;

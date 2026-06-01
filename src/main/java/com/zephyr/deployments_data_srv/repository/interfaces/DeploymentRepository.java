@@ -1,4 +1,4 @@
-package com.zephyr.deployments_data_srv.repository;
+package com.zephyr.deployments_data_srv.repository.interfaces;
 
 import com.zephyr.deployments_data_srv.model.Deployment;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,9 +2,10 @@ package com.zephyr.deployments_data_srv.service;
 
 import com.zephyr.deployments_data_srv.exception.ResourceNotFoundException;
 import com.zephyr.deployments_data_srv.model.Deployment;
-import com.zephyr.deployments_data_srv.model.DeploymentEnvironment;
-import com.zephyr.deployments_data_srv.model.DeploymentStatus;
-import com.zephyr.deployments_data_srv.repository.DeploymentRepository;
+import com.zephyr.deployments_data_srv.model.enums.DeploymentEnvironment;
+import com.zephyr.deployments_data_srv.model.enums.DeploymentStatus;
+import com.zephyr.deployments_data_srv.repository.interfaces.DeploymentRepository;
+import com.zephyr.deployments_data_srv.service.implementations.DeploymentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -68,7 +68,7 @@
             "$ref": "#/components/parameters/pageParam"
           },
           {
-            "$ref": "#/components/parameters/sizeParam"
+            "$ref": "#/components/parameters/pageSizeParam"
           }
         ],
         "responses": {
@@ -119,8 +119,8 @@
           "default": 0
         }
       },
-      "sizeParam": {
-        "name": "size",
+      "pageSizeParam": {
+        "name": "page_size",
         "in": "query",
         "required": false,
         "description": "Size of the page",

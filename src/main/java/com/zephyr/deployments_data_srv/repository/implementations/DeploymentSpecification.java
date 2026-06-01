@@ -1,8 +1,8 @@
-package com.zephyr.deployments_data_srv.repository;
+package com.zephyr.deployments_data_srv.repository.implementations;
 
 import com.zephyr.deployments_data_srv.model.Deployment;
-import com.zephyr.deployments_data_srv.model.DeploymentEnvironment;
-import com.zephyr.deployments_data_srv.model.DeploymentStatus;
+import com.zephyr.deployments_data_srv.model.enums.DeploymentEnvironment;
+import com.zephyr.deployments_data_srv.model.enums.DeploymentStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 /**

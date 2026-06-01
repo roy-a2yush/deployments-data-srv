@@ -1,5 +1,7 @@
 package com.zephyr.deployments_data_srv.model;
 
+import com.zephyr.deployments_data_srv.model.enums.DeploymentEnvironment;
+import com.zephyr.deployments_data_srv.model.enums.DeploymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

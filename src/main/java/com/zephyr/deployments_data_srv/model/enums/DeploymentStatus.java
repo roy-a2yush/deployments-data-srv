@@ -1,4 +1,4 @@
-package com.zephyr.deployments_data_srv.model;
+package com.zephyr.deployments_data_srv.model.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
