@@ -36,3 +36,21 @@ jobs:
 
     - name: Build with Maven and run specific test
       run: mvn clean test -Dtest=${{ matrix.test-class }}
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Trigger Render Deployment
+      env:
+        deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      run: |
+        if [ -z "$deploy_url" ]; then
+          echo "Error: RENDER_DEPLOY_HOOK_URL secret is not set!"
+          echo "Please configure it in your GitHub repository settings."
+          exit 1
+        fi
+        echo "Triggering deployment on Render..."
+        curl -X POST -d "" "$deploy_url"
