@@ -7,8 +7,12 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test-class: [DeploymentServiceTest, DeploymentControllerTest]
 
     steps:
     - name: Checkout repository
@@ -30,5 +34,5 @@ jobs:
         sleep 15
         docker ps -a
 
-    - name: Build with Maven and run tests
-      run: mvn clean test
+    - name: Build with Maven and run specific test
+      run: mvn clean test -Dtest=${{ matrix.test-class }}
