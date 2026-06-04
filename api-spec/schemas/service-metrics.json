@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "required": [
+    "service",
+    "environment",
+    "deploymentFrequencyPerHour",
+    "failureRate",
+    "p95DeploymentTime"
+  ],
+  "properties": {
+    "service": {
+      "type": "string",
+      "example": "billing-api"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failed",
+        "rolled_back",
+        "in_progress",
+        "cancelled"
+      ],
+      "example": "production"
+    },
+    "deploymentFrequencyPerHour": {
+      "type": "number",
+      "format": "double",
+      "example": 0.05
+    },
+    "failureRate": {
+      "type": "number",
+      "format": "double",
+      "example": 0.12
+    },
+    "p95DeploymentTime": {
+      "type": "number",
+      "format": "double",
+      "example": 320.0
+    }
+  }
+}

@@ -3,8 +3,12 @@ package com.zephyr.deployments_data_srv.controller;
 import com.zephyr.deployments_data_srv.DeploymentsApi;
 import com.zephyr.deployments_data_srv.ListDeployments200Response;
 import com.zephyr.deployments_data_srv.ListDeployments200ResponseAllOfContentInner;
+import com.zephyr.deployments_data_srv.MetricsApi;
+import com.zephyr.deployments_data_srv.GetMetrics200Response;
+import com.zephyr.deployments_data_srv.GetMetrics200ResponseAllOfContentInner;
 import com.zephyr.deployments_data_srv.model.Deployment;
 import com.zephyr.deployments_data_srv.service.interfaces.DeploymentService;
+import com.zephyr.deployments_data_srv.service.interfaces.DeploymentMetricsService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,12 +17,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-public class DeploymentController implements DeploymentsApi {
+public class DeploymentController implements DeploymentsApi, MetricsApi {
 
     private final DeploymentService service;
+    private final DeploymentMetricsService metricsService;
 
-    public DeploymentController(DeploymentService service) {
+    public DeploymentController(DeploymentService service, DeploymentMetricsService metricsService) {
         this.service = service;
+        this.metricsService = metricsService;
+    }
+
+    @Override
+    public java.util.Optional<org.springframework.web.context.request.NativeWebRequest> getRequest() {
+        return DeploymentsApi.super.getRequest();
     }
 
     @Override
@@ -50,6 +61,27 @@ public class DeploymentController implements DeploymentsApi {
     public ResponseEntity<ListDeployments200ResponseAllOfContentInner> getDeployment(String id) {
         Deployment deployment = service.getDeploymentById(id);
         return ResponseEntity.ok(mapToDto(deployment));
+    }
+
+    @Override
+    public ResponseEntity<GetMetrics200Response> getMetrics(
+            List<String> environment,
+            String service,
+            String timeRange,
+            Integer page,
+            Integer size) {
+
+        Page<GetMetrics200ResponseAllOfContentInner> metricsPage = metricsService.getServiceMetrics(
+                environment, service, timeRange, page, size);
+
+        GetMetrics200Response response = new GetMetrics200Response();
+        response.setContent(metricsPage.getContent());
+        response.setTotalElements((int) metricsPage.getTotalElements());
+        response.setTotalPages(metricsPage.getTotalPages());
+        response.setSize(metricsPage.getSize());
+        response.setNumber(metricsPage.getNumber());
+
+        return ResponseEntity.ok(response);
     }
 
     private ListDeployments200ResponseAllOfContentInner mapToDto(Deployment entity) {

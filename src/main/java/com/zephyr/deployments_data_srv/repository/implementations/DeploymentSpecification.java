@@ -4,6 +4,8 @@ import com.zephyr.deployments_data_srv.model.Deployment;
 import com.zephyr.deployments_data_srv.model.enums.DeploymentEnvironment;
 import com.zephyr.deployments_data_srv.model.enums.DeploymentStatus;
 import org.springframework.data.jpa.domain.Specification;
+import java.time.OffsetDateTime;
+import java.util.Collection;
 
 /**
  * Specifications for querying {@link Deployment} entities dynamically.
@@ -40,6 +42,7 @@ public final class DeploymentSpecification {
         };
     }
 
+
     /**
      * Creates a specification to filter by target environment.
      */
@@ -49,6 +52,30 @@ public final class DeploymentSpecification {
                 return cb.conjunction();
             }
             return cb.equal(root.get("environment"), environment);
+        };
+    }
+
+    /**
+     * Creates a specification to filter by multiple environments.
+     */
+    public static Specification<Deployment> withEnvironments(Collection<DeploymentEnvironment> environments) {
+        return (root, query, cb) -> {
+            if (environments == null || environments.isEmpty()) {
+                return cb.conjunction();
+            }
+            return root.get("environment").in(environments);
+        };
+    }
+
+    /**
+     * Creates a specification to filter by timestamp boundary.
+     */
+    public static Specification<Deployment> withTimestampAfter(OffsetDateTime timestamp) {
+        return (root, query, cb) -> {
+            if (timestamp == null) {
+                return cb.conjunction();
+            }
+            return cb.greaterThanOrEqualTo(root.get("timestamp"), timestamp);
         };
     }
 
@@ -111,6 +138,26 @@ public final class DeploymentSpecification {
         public Builder withEnvironment(DeploymentEnvironment environment) {
             if (environment != null) {
                 append(DeploymentSpecification.withEnvironment(environment));
+            }
+            return this;
+        }
+
+        /**
+         * Add filter by multiple environments.
+         */
+        public Builder withEnvironments(Collection<DeploymentEnvironment> environments) {
+            if (environments != null && !environments.isEmpty()) {
+                append(DeploymentSpecification.withEnvironments(environments));
+            }
+            return this;
+        }
+
+        /**
+         * Add filter by timestamp boundary.
+         */
+        public Builder withTimestampAfter(OffsetDateTime timestamp) {
+            if (timestamp != null) {
+                append(DeploymentSpecification.withTimestampAfter(timestamp));
             }
             return this;
         }

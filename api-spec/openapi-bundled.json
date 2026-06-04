@@ -429,6 +429,201 @@
           }
         }
       }
+    },
+    "/metrics": {
+      "get": {
+        "summary": "Fetch metrics data for services",
+        "operationId": "getMetrics",
+        "parameters": [
+          {
+            "name": "environment",
+            "in": "query",
+            "required": false,
+            "description": "Filter by environment(s)",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "production",
+                  "staging",
+                  "canary"
+                ]
+              }
+            }
+          },
+          {
+            "name": "service",
+            "in": "query",
+            "required": false,
+            "description": "Filter by microservice name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "timeRange",
+            "in": "query",
+            "required": false,
+            "description": "Filter by time range (e.g. 1h, 1d, 1m). Min: 1h, Max: 12m",
+            "schema": {
+              "type": "string",
+              "default": "1d",
+              "pattern": "^([1-9][0-9]*)([hdm])$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/sizeParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved paginated list of service metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "title": "OffsetPaginationParams",
+                      "type": "object",
+                      "required": [
+                        "totalElements",
+                        "totalPages",
+                        "size",
+                        "number"
+                      ],
+                      "properties": {
+                        "totalElements": {
+                          "type": "integer",
+                          "description": "Total number of elements across all pages",
+                          "example": 204
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "description": "Total number of pages",
+                          "example": 21
+                        },
+                        "size": {
+                          "type": "integer",
+                          "description": "Number of elements per page",
+                          "example": 10
+                        },
+                        "number": {
+                          "type": "integer",
+                          "description": "Current page number (0-indexed)",
+                          "example": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "content"
+                      ],
+                      "properties": {
+                        "content": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "service",
+                              "environment",
+                              "deploymentFrequencyPerHour",
+                              "failureRate",
+                              "p95DeploymentTime"
+                            ],
+                            "properties": {
+                              "service": {
+                                "type": "string",
+                                "example": "billing-api"
+                              },
+                              "environment": {
+                                "type": "string",
+                                "example": "production"
+                              },
+                              "deploymentFrequencyPerHour": {
+                                "type": "number",
+                                "format": "double",
+                                "example": 0.05
+                              },
+                              "failureRate": {
+                                "type": "number",
+                                "format": "double",
+                                "example": 0.12
+                              },
+                              "p95DeploymentTime": {
+                                "type": "number",
+                                "format": "double",
+                                "example": 320.0
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input parameters or validation constraints violated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "A URI reference that identifies the problem type.",
+                      "example": "https://api.deployments.com/errors/bad-request"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short, human-readable summary of the problem type.",
+                      "example": "Bad Request"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code.",
+                      "example": 400
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A human-readable explanation specific to this occurrence of the problem.",
+                      "example": "Required query parameter 'environment' is invalid. Allowed values: [production, staging, canary]"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "A URI reference that identifies the specific occurrence of the problem.",
+                      "example": "/metrics?timeRange=13m"
+                    }
+                  }
+                },
+                "example": {
+                  "type": "https://api.deployments.com/errors/bad-request",
+                  "title": "Bad Request",
+                  "status": 400,
+                  "detail": "Time range exceeds limit of 12 months.",
+                  "instance": "/metrics?timeRange=13m"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

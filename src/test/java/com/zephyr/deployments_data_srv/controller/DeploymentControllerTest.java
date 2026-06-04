@@ -6,6 +6,8 @@ import com.zephyr.deployments_data_srv.model.Deployment;
 import com.zephyr.deployments_data_srv.model.enums.DeploymentEnvironment;
 import com.zephyr.deployments_data_srv.model.enums.DeploymentStatus;
 import com.zephyr.deployments_data_srv.service.interfaces.DeploymentService;
+import com.zephyr.deployments_data_srv.service.interfaces.DeploymentMetricsService;
+import com.zephyr.deployments_data_srv.GetMetrics200ResponseAllOfContentInner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +34,9 @@ public class DeploymentControllerTest {
 
     @Mock
     private DeploymentService service;
+
+    @Mock
+    private DeploymentMetricsService metricsService;
 
     @InjectMocks
     private DeploymentController controller;
@@ -128,5 +133,49 @@ public class DeploymentControllerTest {
                 .andExpect(jsonPath("$.title").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.detail").value("Unknown status value: invalid_status"));
+    }
+
+    @Test
+    public void getMetrics_Success() throws Exception {
+        GetMetrics200ResponseAllOfContentInner inner = new GetMetrics200ResponseAllOfContentInner();
+        inner.setService("billing-api");
+        inner.setEnvironment("production");
+        inner.setDeploymentFrequencyPerHour(0.05);
+        inner.setFailureRate(0.12);
+        inner.setP95DeploymentTime(320.0);
+
+        org.springframework.data.domain.Page<GetMetrics200ResponseAllOfContentInner> mockPage = 
+                new org.springframework.data.domain.PageImpl<>(Collections.singletonList(inner));
+
+        when(metricsService.getServiceMetrics(any(), any(), eq("1d"), anyInt(), anyInt()))
+                .thenReturn(mockPage);
+
+        mockMvc.perform(get("/metrics")
+                        .param("environment", "production")
+                        .param("service", "billing-api")
+                        .param("timeRange", "1d")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].service").value("billing-api"))
+                .andExpect(jsonPath("$.content[0].environment").value("production"))
+                .andExpect(jsonPath("$.content[0].deploymentFrequencyPerHour").value(0.05))
+                .andExpect(jsonPath("$.content[0].failureRate").value(0.12))
+                .andExpect(jsonPath("$.content[0].p95DeploymentTime").value(320.0));
+    }
+
+    @Test
+    public void getMetrics_InvalidRange_Returns400() throws Exception {
+        when(metricsService.getServiceMetrics(any(), any(), eq("13m"), anyInt(), anyInt()))
+                .thenThrow(new IllegalArgumentException("Maximum time range is 12 months"));
+
+        mockMvc.perform(get("/metrics")
+                        .param("timeRange", "13m")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title").value("Bad Request"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.detail").value("Maximum time range is 12 months"));
     }
 }

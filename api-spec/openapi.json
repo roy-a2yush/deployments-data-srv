@@ -105,6 +105,66 @@
           }
         }
       }
+    },
+    "/metrics": {
+      "get": {
+        "summary": "Fetch metrics data for services",
+        "operationId": "getMetrics",
+        "parameters": [
+          {
+            "name": "environment",
+            "in": "query",
+            "required": false,
+            "description": "Filter by environment(s)",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "production",
+                  "staging",
+                  "canary"
+                ]
+              }
+            }
+          },
+          {
+            "name": "service",
+            "in": "query",
+            "required": false,
+            "description": "Filter by microservice name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "timeRange",
+            "in": "query",
+            "required": false,
+            "description": "Filter by time range (e.g. 1h, 1d, 1m). Min: 1h, Max: 12m",
+            "schema": {
+              "type": "string",
+              "default": "1d",
+              "pattern": "^([1-9][0-9]*)([hdm])$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageSizeParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "./responses/success/service-metrics-list.json"
+          },
+          "400": {
+            "$ref": "./responses/failure/error-bad-request.json"
+          }
+        }
+      }
     }
   },
   "components": {
